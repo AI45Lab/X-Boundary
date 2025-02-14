@@ -1,0 +1,9 @@
+**/checkpoints/*
+**/data/*
+**/out/*
+**/log/*
+**/work_dirs/*
+**/archive/*
+**/variance/*
+**/search/*
+**/plot/*

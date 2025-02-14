@@ -1,0 +1,14 @@
+datasets==2.21.0
+deepspeed==0.15.4
+huggingface_hub==0.26.2
+matplotlib==3.10.0
+numpy==2.2.2
+peft==0.13.2
+Requests==2.32.3
+safetensors==0.5.2
+sympy==1.13.1
+torch==2.4.0+cu118
+tqdm==4.67.0
+traitlets==5.14.3
+transformers==4.46.2
+sentence-transformers==3.3.1
