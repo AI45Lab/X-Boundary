@@ -6,7 +6,7 @@ export CUBLAS_WORKSPACE_CONFIG=:16:8
 boundary_data_size=100
 max_steps=180
 multi_turn_data_path=data/train/SafeMT_train_600.json
-model_name_or_path=checkpoints/Qwen2.5-7B-Instruct
+model_name_or_path=Qwen/Qwen2.5-7B-Instruct
 # Qwen/Qwen2.5-7B-Instruct
 lorra_alpha=10
 layers="10,20"

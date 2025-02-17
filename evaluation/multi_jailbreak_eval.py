@@ -150,7 +150,7 @@ if __name__ == "__main__":
     parser.add_argument('--file_path', default="data/test/multi_turn/SafeMTData_Attack_test_600.json", type=str)
     parser.add_argument('--output_dir', type=str)
     parser.add_argument('--targetLLM_temperature', type=int)
-    parser.add_argument('--judge_name_or_path', default='checkpoints/HarmBench-Llama-2-13b-cls', type=str)
+    parser.add_argument('--judge_name_or_path', default='cais/HarmBench-Llama-2-13b-cls', type=str)
     parser.add_argument("--judge_temperature", type=int, default=0)
     parser.add_argument("--judge_max_new_tokens", type=int, default=128)
     parser.add_argument('--seed', type=int, default=42)

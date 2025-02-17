@@ -194,7 +194,7 @@ if __name__ == "__main__":
     parser.add_argument('--save_path', type=str)
     args = parser.parse_args()
     judge_config = {
-        "model_name_or_path": 'checkpoints/HarmBench-Llama-2-13b-cls',
+        "model_name_or_path": 'cais/HarmBench-Llama-2-13b-cls',
         "temperature": 0,
         "max_new_tokens": 128,
         "seed": 42,
