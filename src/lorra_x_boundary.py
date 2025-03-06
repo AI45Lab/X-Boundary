@@ -112,7 +112,7 @@ def compute_loss(self, model, inputs, target_layers, alpha, batch_size, return_o
 
         # calculate erase loss or separate loss
         x_boundary_loss = 0
-        is_refusal = inputs.get("is_refusal")
+        is_boundary = inputs.get("is_boundary")
         target_orig_retain_hidden = torch.stack([orig_retain_hidden[l] for l in target_layers]).permute(1,0,2,3)
         normalized_target_orig_retain_hidden = target_orig_retain_hidden / (torch.norm(target_orig_retain_hidden, dim=-1, keepdim=True, dtype=torch.float))
         target_layer_retain_attention_mask = torch.stack([layers_retain_attention_mask[l] for l in target_layers]).permute(1,0,2,3)
@@ -122,7 +122,7 @@ def compute_loss(self, model, inputs, target_layers, alpha, batch_size, return_o
         normalized_x_boundary_outputs = normalized_x_boundary_outputs.permute(1,0,2,3)
         for i in range(batch_size):
             # calculate seperate loss
-            if is_refusal[i]:
+            if is_boundary[i]:
                 normalized_mean_retain_outputs = normalized_target_orig_retain_hidden[i].sum(dim=-2) / target_layer_retain_attention_mask[i].sum(dim=-2)
                 xb_len = normalized_lora_x_boundary_outputs[i].shape[1]
                 normalized_mean_retain_outputs = normalized_mean_retain_outputs.unsqueeze(dim=-2).repeat(1,xb_len,1)
@@ -251,7 +251,6 @@ def train():
     transform_layers = lorra_args.transform_layers
     full_layers = lorra_args.full_layers
 
-
     lorra_target_layers = [int(layer) for layer in target_layers.split(",")] # target representations
     if "-1" in transform_layers:
         lora_layers_to_transform = [i for i in range(max(lorra_target_layers) + 1)]
@@ -331,7 +330,11 @@ def train():
             self.val_loss = []
 
         def get_training_progress(self):
-            return self.current_training_step / self.lorra_args.loss_coeff
+            scheduled_coeff = self.current_training_step / self.lorra_args.loss_coeff
+            # use large coeff for X_Boundary loss to warm up
+            if self.lorra_args.use_warm_up and self.current_training_step < 30:
+                scheduled_coeff = 0.001
+            return scheduled_coeff
 
         def compute_loss(self, model, inputs, return_outputs=False):
             return compute_loss(

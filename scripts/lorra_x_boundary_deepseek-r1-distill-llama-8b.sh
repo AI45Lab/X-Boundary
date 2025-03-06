@@ -2,22 +2,26 @@ export WANDB_MODE=offline
 export MASTER_PORT=$((29000 + RANDOM % 1000))
 export CUBLAS_WORKSPACE_CONFIG=:16:8
 
-### Qwen2.5-7B Config ###
-boundary_data_size=100
+### DeepSeek-R1-Distill-Llama3-8B Config ###
+boundary_data_size=400
 max_steps=180
 multi_turn_data_path=data/train/SafeMT_train_600.json
-model_name_or_path=Qwen/Qwen2.5-7B-Instruct
+model_name_or_path=checkpoints/DeepSeek-R1-Distill-Llama-8B
 lorra_alpha=10
 layers="10,20"
 transform_layers="-1"
 
-output_dir="./models/Qwen_7B_X_Boundary_adapter"
+output_dir="./models/DeepSeek_R1_Distill_Llama3_8B_X_Boundary_adapter"
 results_file=${output_dir}/log.txt
 mkdir -p ${output_dir}
 
 echo "model_name_or_path=$model_name_or_path"
 echo "output_dir=$output_dir"
 
+srun \
+    -p AI4Good_S \
+    -J run_cb \
+    --gres=gpu:1 \
 accelerate launch --config_file configs/accelerate_zero1.yaml \
     --num_processes 1 --main_process_port $MASTER_PORT --deepspeed_hostfile ds_hostfile \
     src/lorra_x_boundary.py \
@@ -28,7 +32,6 @@ accelerate launch --config_file configs/accelerate_zero1.yaml \
     --lora_r 16 \
     --lora_alpha 16 \
     --lora_dropout 0.05 \
-    --loss_coeff 600 \
     --multi_turn_data_path $multi_turn_data_path \
     --boundary_data_size $boundary_data_size \
     --output_dir  $output_dir \

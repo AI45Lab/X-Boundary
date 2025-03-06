@@ -36,6 +36,8 @@ def multi_turn_generate(model, tokenizer, instances, gen_kwargs: dict):
         gen_kwargs["compute_norms"] = gen_kwargs_copy["compute_norms"]
         gen_kwargs["prefill"] = gen_kwargs_copy["prefill"]
         gen_kwargs["use_template"] = gen_kwargs_copy["use_template"]
+        gen_kwargs["vlm_acc"] = gen_kwargs_copy["vlm_acc"]
+        gen_kwargs["model_name_or_path"] = gen_kwargs_copy["model_name_or_path"]
         for instance in instances:
             instance.messages.append({
                 "role": "assistant",

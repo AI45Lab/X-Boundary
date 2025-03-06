@@ -70,17 +70,16 @@ class JudgeConfig:
 class Judge:
     def __init__(self, config: JudgeConfig):
         dtype = "auto" if torch.cuda.is_available() and torch.cuda.is_bf16_supported() else torch.float16
+        device = "cuda" if torch.cuda.is_available() else "cpu"
         self.tokenizer = AutoTokenizer.from_pretrained(
             config.model_name_or_path,
             torch_dtype=dtype,
-            device_map="auto"
         )
 
         self.model = AutoModelForCausalLM.from_pretrained(
             config.model_name_or_path,
             torch_dtype=dtype,
-            device_map="auto"
-        )
+        ).to(device)
 
         self.config = config
 

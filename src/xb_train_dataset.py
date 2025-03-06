@@ -35,7 +35,7 @@ class XBoundaryDataset(Dataset):
         switch_select = [0]
         self.use_refusal_retain = False
         user_tag, assistant_tag = None, None
-        if 'llama-3' in self.model_name_or_path:
+        if 'llama' in self.model_name_or_path:
             print("USING LLAMA TEMPLATE")
             user_tag="<|start_header_id|>user<|end_header_id|>\n\n"
             assistant_tag="<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
@@ -211,11 +211,11 @@ class XBoundaryDataset(Dataset):
 
         # =========== Circuit Breaker Inputs =========== #
         # === split to [request, response] shape [512,512] to support different mask configs ===
-        is_refusal_forget = False
+        is_boundary = False
         if type(x_boundary_orig) == dict:
             orig_s_retain = x_boundary_orig['retainQA']
             x_boundary_orig = x_boundary_orig['overrefusalQA']
-            is_refusal_forget = True
+            is_boundary = True
         cb_request, cb_response = x_boundary_orig.split('<SEPARATOR>')
         self.tokenizer.padding_side = "left"
         tokenized_request_x_boundary = self.tokenizer(cb_request, **cb_tokenized_kwargs)
@@ -225,7 +225,7 @@ class XBoundaryDataset(Dataset):
 
         combined_input_ids_x_boundary = torch.cat([tokenized_request_x_boundary["input_ids"], response_tokenized_x_boundary["input_ids"]], dim=1)
         combined_attention_mask_x_boundary = torch.cat([tokenized_request_x_boundary["attention_mask"], response_tokenized_x_boundary["attention_mask"]], dim=1)
-        if is_refusal_forget:
+        if is_boundary:
             label_mask_x_boundary = torch.cat([tokenized_request_x_boundary['attention_mask'], torch.zeros(response_tokenized_x_boundary["attention_mask"].shape)], dim=1)
         else:
             label_mask_x_boundary = combined_attention_mask_x_boundary
@@ -262,5 +262,5 @@ class XBoundaryDataset(Dataset):
             label_mask_retain=label_mask_retain,
             input_ids_val=tokenized_inputs_val["input_ids"],
             attention_mask_val=tokenized_inputs_val["attention_mask"],
-            is_refusal=is_refusal_forget
+            is_boundary=is_boundary
         )

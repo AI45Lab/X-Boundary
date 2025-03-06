@@ -11,7 +11,7 @@ lorra_alpha=10
 layers="10,20"
 transform_layers="-1"
 
-output_dir="./models/Llama3_X_Boundary_adapter"
+output_dir="./models/Llama3_8B_X_Boundary_adapter"
 results_file=${output_dir}/log.txt
 mkdir -p ${output_dir}
 

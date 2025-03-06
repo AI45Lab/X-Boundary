@@ -26,24 +26,24 @@ sh scripts/lorra_x_boundary_qwen2_7b.sh
 ```
 
 ## Evaluation
-evaluate defense against single-turn attack in HarmBench
+Evaluate defense against single-turn attack in HarmBench
 ```shell
 sh scripts/eval/eval_cb.sh $model_path
 ```
 
-evaluate defense against ActorAttack
+Evaluate defense against ActorAttack
 ```shell
 sh scripts/eval/multi_round_eval.sh $model_path
 ```
 
-evaluate defense against RedQueen attack
+Evaluate defense against RedQueen attack
 ```shell
 sh scripts/eval/red_queen_eval.sh $model_path
 
 sh scripts/eval/red_queen_eval_llama.sh $model_path # for llama-3
 ```
 
-evaluate over-refusal rate
+Evaluate over-refusal rate
 ```shell
 sh scripts/eval/overrefusal_eval.sh $model_path data/test/OKTest.json
 
@@ -53,6 +53,20 @@ sh scripts/eval/overrefusal_eval.sh $model_path data/test/ORbench_test300.json
 
 sh scripts/eval/overrefusal_eval.sh $model_path data/test/xstest_v2_prompts.json
 ```
+
+If you want to speed up inference, especially when using a reasoning model like deepseek-R1, you can set "--vlm_acc true" in your evaluation scripts to use vllm as the backend of inference.
+
+``` shell
+pip install vllm==0.7.3
+```
+
+For the R1 distilled models, we set the max_new_tokens to 8192 for evaluating single-turn safety and over-refusal, and 2048 for evaluation under multi-turn attacks.
+
+## Inference with X-Boundary adapter and gibberish filter
+
+After the harmful representations are erased, the LLM has a certain probability of generating gibberish due to its inability to produce harmful content. We can use a rule-based detector to identify gibberish and replace it with a refusal response. This post-processing generally does not affect normal outputs. We provide a demo in `R1_X_Boundary_demo.py`.
+
+![alt text](asset/reasoning_case.png)
 
 ## Acknowledge
 Leveraged the part of code framework of [Circuit Breaker](https://github.com/GraySwanAI/circuit-breakers).

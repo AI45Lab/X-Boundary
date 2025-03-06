@@ -7,21 +7,16 @@ import typing
 class LorraArguments:
     target_layers: str = field(metadata={"help": "Layers for Representation. Layers are seperate by `,` eg: `10,12,14,16,18,20` "})
     transform_layers: str = field(metadata={"help": "Layers for Representation. Layers are seperate by `,` eg: `10,12,14,16,18,20` "})
-    lorra_alpha: float = field(default=5, metadata={"help": ""}) # LoRRA Hyperparameters
+    lorra_alpha: float = field(default=5, metadata={"help": "LoRRA Hyperparameters"}) 
     trainsets: typing.List[str] = field(default=None, metadata={"help": "A list of trainsets for finetuning the corresponding Concepts/Functions, separated by # for commandline inputs (eg: ['AlpacaSupervisedDataset'])"})
     valsets: typing.List[str] = field(default=None, metadata={"help": "A list of valsets for finetuning the corresponding Concepts/Functions, separated by # for commandline inputs (eg: ['AlpacaSupervisedDataset'])"})
-    adv_string: str = field(default="", metadata={"help": "adversarial string for harmful prompt. (eg: Start with 'Sure here's')"})
-    full_layers: bool = field(
-        default=False, metadata={"help": "Whether to drop not used layer during training"}
-    )
-    use_refusal_retain : Optional[bool] = field(default = True, 
-                                                metadata={"help":"whether to train on refusal retain set for Llama models"})
-    boundary_data_size : int = field(default = 0, 
-                                                metadata={"help":"the size of boundary set"})
-    multi_turn_data_path : str = field(default=None,
-                                       metadata={"help":"the path of multi_turn data"})
-    loss_coeff : int = field(default=300,
-                             metadata={"help":"the coefficient for dynamic change of loss"})
+    adv_string: str = field(default="", metadata={"help": "Adversarial string for harmful prompt. (eg: Start with 'Sure here's')"})
+    full_layers: bool = field(default=False, metadata={"help": "Whether to drop not used layer during training"})
+    use_refusal_retain : Optional[bool] = field(default=True, metadata={"help":"Whether to train on refusal retain set for Llama models"})
+    boundary_data_size : int = field(default=0, metadata={"help":"The size of boundary set"})
+    multi_turn_data_path : str = field(default=None, metadata={"help":"The path of multi_turn data"})
+    loss_coeff : int = field(default=300, metadata={"help":"The coefficient for dynamic change of loss"})
+    use_warm_up : bool = field(default=False, metadata={"help":"Whether to use the warm up for coefficient of X_Boundary loss"})
 
     def to_dict(self):
         return dict( 

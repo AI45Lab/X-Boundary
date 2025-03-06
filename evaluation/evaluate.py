@@ -9,7 +9,6 @@ from pathlib import Path
 import pickle
 
 import torch
-from traitlets import default
 from transformers import set_seed
 
 from api import EvalInstance
@@ -39,6 +38,7 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", type=str, default=None)
     parser.add_argument("--save_norms", action="store_true")
+    parser.add_argument("--vlm_acc", type=bool, default=False)
     # Generation arguments
     parser.add_argument("--temperature", type=float, default=None)
     parser.add_argument("--do_sample", type=bool, default=False)
@@ -62,13 +62,14 @@ def evaluate(
     seed,
     overrefusal_judge_mode,
     gen_kwargs,
-    judge_config
+    judge_config,
+    vlm_acc
 ):
     if seed is not None:
         set_seed(seed)
         # torch.use_deterministic_algorithms(True, warn_only=True)
 
-    model, tokenizer = load_model_and_tokenizer(model_name_or_path)
+    model, tokenizer = load_model_and_tokenizer(model_name_or_path, vlm_acc)
     
     with open(benchmark_path) as f:
         benchmark = json.load(f)
@@ -85,6 +86,8 @@ def evaluate(
             instances = instances[start:]
     
     # Generate completions from the model
+    gen_kwargs['vlm_acc'] = vlm_acc
+    gen_kwargs['model_name_or_path'] = model_name_or_path
     if 'multi_turn' in benchmark_path.lower(): 
         multi_turn_generate(model, tokenizer, instances, gen_kwargs)
     else:
@@ -106,7 +109,7 @@ def evaluate(
         else:         
             score = judge.evaluate(instances)
     else: # overrefusal
-        overrefusal_judge(instances, overrefusal_judge_mode)
+        overrefusal_judge(instances, overrefusal_judge_mode, model_name_or_path)
         score = overrefusal_analysis(instances, benchmark_path)
         
     return score, instances
@@ -144,6 +147,7 @@ def main():
         args.judge_overrefusal_mode,
         gen_kwargs,
         judge_config,
+        args.vlm_acc
     )
 
     print(f"Evaluation score: {score}")
