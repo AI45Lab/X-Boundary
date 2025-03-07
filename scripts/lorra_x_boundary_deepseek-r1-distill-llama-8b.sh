@@ -6,7 +6,7 @@ export CUBLAS_WORKSPACE_CONFIG=:16:8
 boundary_data_size=400
 max_steps=180
 multi_turn_data_path=data/train/SafeMT_train_600.json
-model_name_or_path=checkpoints/DeepSeek-R1-Distill-Llama-8B
+model_name_or_path=deepseek-ai/DeepSeek-R1-Distill-Llama-8B
 lorra_alpha=10
 layers="10,20"
 transform_layers="-1"
@@ -18,10 +18,6 @@ mkdir -p ${output_dir}
 echo "model_name_or_path=$model_name_or_path"
 echo "output_dir=$output_dir"
 
-srun \
-    -p AI4Good_S \
-    -J run_cb \
-    --gres=gpu:1 \
 accelerate launch --config_file configs/accelerate_zero1.yaml \
     --num_processes 1 --main_process_port $MASTER_PORT --deepspeed_hostfile ds_hostfile \
     src/lorra_x_boundary.py \
