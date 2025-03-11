@@ -66,7 +66,7 @@ For the R1 distilled models, we set the max_new_tokens to 8192 for evaluating si
 
 After the harmful representations are erased, the LLM has a certain probability of generating gibberish due to its inability to produce harmful content. We can use a rule-based detector to identify gibberish and replace it with a refusal response. This post-processing generally does not affect normal outputs. We provide a demo in `R1_X_Boundary_demo.py`.
 
-![alt text](asset/reasoning_case.png)
+![alt text](asset/reasoning_model_case.png)
 
 ## Acknowledge
 Leveraged the part of code framework of [Circuit Breaker](https://github.com/GraySwanAI/circuit-breakers).
