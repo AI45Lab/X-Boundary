@@ -209,7 +209,7 @@ class XBoundaryDataset(Dataset):
         cb_tokenized_kwargs = dict(max_length=512, padding='max_length', truncation=True, return_tensors="pt")
         tokenize_kwargs = dict(max_length=1024, padding="max_length", truncation=True, return_tensors="pt")
 
-        # =========== Circuit Breaker Inputs =========== #
+        # =========== Erase Inputs =========== #
         # === split to [request, response] shape [512,512] to support different mask configs ===
         is_boundary = False
         if type(x_boundary_orig) == dict:
